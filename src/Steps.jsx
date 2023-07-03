@@ -7,7 +7,7 @@ export default function Steps() {
       <RigidBody type="fixed" position={[0, -0.9, 5]}>
         <mesh receiveShadow>
           <boxGeometry args={[4, 0.2, 0.2]} />
-          <meshStandardMaterial color={"lightpink"} />
+          <meshStandardMaterial color={"blue"} />
         </mesh>
       </RigidBody>
       <RigidBody type="fixed" position={[0, -0.9, 6]}>

@@ -6,6 +6,7 @@ import { useRef, useMemo, useState } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 import useFollowCam from "./hooks/useFollowCam";
+import Player from "./Player";
 
 export default function Character() {
   const characterRef = useRef();
@@ -567,17 +568,17 @@ export default function Character() {
     >
       <CapsuleCollider args={[0.35, 0.3]} />
       <group ref={characterModelRef}>
+        <Player scale={0.045} position={[0,-0.6,0]} />
+
         <mesh position={[0, 0, slopeRayOriginOffest]} ref={slopeRayOriginRef}>
           <boxGeometry args={[0.1, 0.1, 0.1]} />
         </mesh>
+        
         <mesh castShadow>
           <capsuleGeometry args={[0.3, 0.7]} />
           <meshStandardMaterial color="mediumpurple" />
         </mesh>
-        <mesh castShadow position={[0, 0.2, 0.2]}>
-          <boxGeometry args={[0.5, 0.2, 0.3]} />
-          <meshStandardMaterial color="mediumpurple" />
-        </mesh>
+ 
       </group>
     </RigidBody>
   );

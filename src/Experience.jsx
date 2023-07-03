@@ -17,7 +17,7 @@ export default function Experience() {
    * Debug settings
    */
   const {physics} = useControls("World Settings",{
-    physics: true
+    physics: false
   })
 
   /**
@@ -60,17 +60,6 @@ export default function Experience() {
         {/* Slopes and stairs */}
         <Slopes />
 
-        {/* Small steps */}
-        <Steps />
-
-        {/* Rigid body objects */}
-        <RigidObjects />
-
-        {/* Floating platform */}
-        <FloatingPlatform />
-
-        {/* Dynamic platforms */}
-        <DynamicPlatforms />
 
         {/* Floor */}
         <Floor />
