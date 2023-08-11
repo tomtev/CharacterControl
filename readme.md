@@ -11,6 +11,19 @@ Simple web based character controller build on [react-three-fiber](https://githu
 5. Realistic simulation with applied mass on supporting surfaces
 6. Smooth integration with moving and rotating platforms
 
+## New Features
+
+### (2023-08-10) Camera Enhancement:
+- Collision detection 
+- Zoom in/out capability 
+- Expanded movement range 
+- Improved tracking smoothness
+
+### (2023-07-27) Character Auto Balance:
+- Character tilts forward/backward while in motion
+- Automatically returns to upright position after a hit or attack
+- Stability customization: Users can fine-tune the balance sensitivity to match their gameplay style
+
 ## Project Link
 
 Live Demo: [Floating Capsule Character Controller](https://character-control.vercel.app/)
@@ -34,10 +47,8 @@ npm run build
 
 As I continue to improve and expand the Floating Capsule Character Controller, here are some next steps I am considering:
 
-1. Better handling of slope and stairs movement
-2. Implementing camera collision to prevent clipping
-3. Adding a dust effect triggered by character movement or jumps
-4. Developing a character animation state machine for seamless animation transitions
+1. Adding a dust effect triggered by character movement or jumps
+2. Developing a character animation state machine for seamless animation transitions
 
 ## Contributions
 

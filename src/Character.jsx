@@ -2,11 +2,10 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RigidBody, CapsuleCollider, useRapier } from "@react-three/rapier";
 import { useEffect } from "react";
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
 import useFollowCam from "./hooks/useFollowCam";
-import Player from "./Player";
 
 export default function Character() {
   const characterRef = useRef();
@@ -25,6 +24,8 @@ export default function Character() {
     airDragMultiplier,
     dragDampingC,
     accDeltaTime,
+    moveImpulsePointY,
+    camFollowMult,
   } = useControls("Character controls", {
     maxVelLimit: {
       value: 5,
@@ -33,13 +34,13 @@ export default function Character() {
       step: 0.01,
     },
     turnVelMultiplier: {
-      value: 0.1,
+      value: 0.8,
       min: 0,
       max: 1,
       step: 0.01,
     },
     turnSpeed: {
-      value: 18,
+      value: 20,
       min: 5,
       max: 30,
       step: 0.1,
@@ -80,26 +81,42 @@ export default function Character() {
       max: 50,
       step: 1,
     },
+    moveImpulsePointY: {
+      value: 0.5,
+      min: 0,
+      max: 3,
+      step: 0.1,
+    },
+    camFollowMult: {
+      value: 11,
+      min: 0,
+      max: 15,
+      step: 0.1,
+    },
   });
 
-  const { rayLength, rayDir, floatingDis, springK, dampingC } = useControls(
-    "Floating Ray",
-    {
+  const { rayOriginOffest, rayLength, rayDir, floatingDis, springK, dampingC } =
+    useControls("Floating Ray", {
+      rayOriginOffest: {
+        x: 0,
+        y: -0.35,
+        z: 0,
+      },
       rayLength: {
-        value: 1.5,
+        value: 2,
         min: 0,
-        max: 3,
+        max: 10,
         step: 0.01,
       },
       rayDir: { x: 0, y: -1, z: 0 },
       floatingDis: {
-        value: 0.8,
+        value: 0.6,
         min: 0,
         max: 2,
         step: 0.01,
       },
       springK: {
-        value: 3,
+        value: 1.5,
         min: 0,
         max: 5,
         step: 0.01,
@@ -110,8 +127,7 @@ export default function Character() {
         max: 3,
         step: 0.01,
       },
-    }
-  );
+    });
 
   const {
     slopeRayOriginOffest,
@@ -121,29 +137,58 @@ export default function Character() {
     slopeDownExtraForce,
   } = useControls("Slope Ray", {
     slopeRayOriginOffest: {
-      value: 0.28,
+      value: 0.23,
       min: 0,
       max: 3,
       step: 0.01,
     },
     slopeRayLength: {
-      value: 1.5,
+      value: 2.5,
       min: 0,
-      max: 3,
+      max: 10,
       step: 0.01,
     },
     slopeRayDir: { x: 0, y: -1, z: 0 },
     slopeUpExtraForce: {
-      value: 1.5,
+      value: 1,
       min: 0,
       max: 5,
       step: 0.01,
     },
     slopeDownExtraForce: {
-      value: 4,
+      value: 3,
       min: 0,
       max: 5,
       step: 0.01,
+    },
+  });
+
+  const {
+    autoBalance,
+    autoBalanceSpringK,
+    autoBalanceDampingC,
+    autoBalanceDampingOnY,
+  } = useControls("autoBalance force", {
+    autoBalance: {
+      value: true,
+    },
+    autoBalanceSpringK: {
+      value: 0.4,
+      min: 0,
+      max: 5,
+      step: 0.01,
+    },
+    autoBalanceDampingC: {
+      value: 0.025,
+      min: 0,
+      max: 0.1,
+      step: 0.001,
+    },
+    autoBalanceDampingOnY: {
+      value: 0.02,
+      min: 0,
+      max: 0.1,
+      step: 0.001,
     },
   });
 
@@ -152,14 +197,12 @@ export default function Character() {
    */
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
-  // console.log(rapierWorld.castRay);
-  // const rapierWorld = world.raw();
 
   // can jump setup
-  const [canJump, setCanJump] = useState(false);
+  let canJump = false;
 
   // on moving object state
-  const [isOnMovingObject, setIsOnMovingObject] = useState(false);
+  let isOnMovingObject = false;
   const movingObjectVelocity = useMemo(() => new THREE.Vector3());
   const movingObjectVelocityInCharacterDir = useMemo(() => new THREE.Vector3());
   const distanceFromCharacterToObject = useMemo(() => new THREE.Vector3());
@@ -168,18 +211,12 @@ export default function Character() {
   /**
    * Initial setup
    */
-  // const turnVelMultiplier = 0.04;
-  // const maxVelLimit = 5;
-  // const jumpVel = 4;
-  // const sprintMult = 1.5;
-  // const sprintJumpMult = 1.2;
-  // const dragDampingC = 0.05;
-  // const airDragMultiplier = 0.03;
+  let dirLight = null;
 
   /**
    * Load camera pivot and character move preset
    */
-  const { pivot, followCam } = useFollowCam();
+  const { pivot, followCam, cameraCollisionDetect } = useFollowCam();
   const pivotPosition = useMemo(() => new THREE.Vector3());
   const modelEuler = useMemo(() => new THREE.Euler(), []);
   const modelQuat = useMemo(() => new THREE.Quaternion(), []);
@@ -188,31 +225,33 @@ export default function Character() {
   const moveAccNeeded = useMemo(() => new THREE.Vector3());
   const jumpDirection = useMemo(() => new THREE.Vector3());
   const currentVel = useMemo(() => new THREE.Vector3());
+  const currentPos = useMemo(() => new THREE.Vector3());
   const dragForce = useMemo(() => new THREE.Vector3());
+  const dragAngForce = useMemo(() => new THREE.Vector3());
   const wantToMoveVel = useMemo(() => new THREE.Vector3());
 
   /**
    * Floating Ray setup
    */
-  // const rayLength = 1.5;
-  // const rayDir = { x: 0, y: -1, z: 0 };
+  let floatingForce = null;
   const springDirVec = useMemo(() => new THREE.Vector3());
   const characterMassForce = useMemo(() => new THREE.Vector3());
-  // const floatingDis = 0.8;
-  // const springK = 3;
-  // const dampingC = 0.2;
+  const rayOrigin = useMemo(() => new THREE.Vector3());
+  const rayCast = new rapier.Ray(rayOrigin, rayDir);
+  let rayHit = null;
 
   /**
    * Slope detection ray setup
    */
   let slopeAngle = null;
-  // const slopeRayOriginOffest = 0.28;
+  let actualSlopeNormal = null;
+  let actualSlopeAngle = null;
+  const actualSlopeNormalVec = useMemo(() => new THREE.Vector3());
+  const floorNormal = useMemo(() => new THREE.Vector3(0, 1, 0));
   const slopeRayOriginRef = useRef();
-  // const slopeRayLength = 1.5;
-  // const slopeUpExtraForce = 1.5;
-  // const slopeDownExtraForce = 4;
-  // const slopeRayDir = { x: 0, y: -1, z: 0 };
   const slopeRayorigin = useMemo(() => new THREE.Vector3());
+  const slopeRayCast = new rapier.Ray(slopeRayorigin, slopeRayDir);
+  let slopeRayHit = null;
 
   /**
    * Character moving function
@@ -221,12 +260,23 @@ export default function Character() {
     /**
      * Setup moving direction
      */
-    // Only apply slope extra force when slope angle is between 0.2-1
-    if (Math.abs(slopeAngle) > 0.2 && Math.abs(slopeAngle) < 1) {
+    // Only apply slope extra force when slope angle is between 0.2-1, actualSlopeAngle < 1
+    if (
+      actualSlopeAngle < 1 &&
+      Math.abs(slopeAngle) > 0.2 &&
+      Math.abs(slopeAngle) < 1
+    ) {
       movingDirection.set(0, Math.sin(slopeAngle), Math.cos(slopeAngle));
+    } else if (actualSlopeAngle >= 1) {
+      movingDirection.set(
+        0,
+        Math.sin(slopeAngle) > 0 ? 0 : Math.sin(slopeAngle),
+        Math.sin(slopeAngle) > 0 ? 0.1 : 1
+      );
     } else {
       movingDirection.set(0, 0, 1);
     }
+
     // Apply character quaternion to moving direction
     movingDirection.applyQuaternion(characterModelRef.current.quaternion);
     // Calculate moving object velocity direction according to character moving direction
@@ -323,25 +373,61 @@ export default function Character() {
     }
 
     // Move character at proper direction and impulse
-    characterRef.current.applyImpulse(moveImpulse, true);
+    characterRef.current.applyImpulseAtPoint(
+      moveImpulse,
+      {
+        x: currentPos.x,
+        y: currentPos.y + moveImpulsePointY,
+        z: currentPos.z,
+      },
+      true
+    );
+  };
+
+  /**
+   * Character auto balance function
+   */
+  const autoBalanceCharacter = () => {
+    dragAngForce.set(
+      -autoBalanceSpringK * characterRef.current.rotation().x -
+        characterRef.current.angvel().x * autoBalanceDampingC,
+      -autoBalanceSpringK * characterRef.current.rotation().y -
+        characterRef.current.angvel().y * autoBalanceDampingOnY,
+      -autoBalanceSpringK * characterRef.current.rotation().z -
+        characterRef.current.angvel().z * autoBalanceDampingC
+    );
+    characterRef.current.applyTorqueImpulse(dragAngForce, true);
   };
 
   useEffect(() => {
-    // Lock character rotations at any axis
-    characterRef.current.lockRotations(true);
+    // Initialize directional light
+    dirLight = characterModelRef.current.parent.parent.children.find((item) => {
+      return item.type === "DirectionalLight";
+    });
+  });
+
+  useEffect(() => {
+    // Lock character rotations at Y axis
+    characterRef.current.setEnabledRotations(
+      autoBalance ? true : false,
+      autoBalance ? true : false,
+      autoBalance ? true : false
+    );
   }, []);
 
   useFrame((state, delta) => {
+    // Character current position
+    currentPos.copy(characterRef.current.translation());
+
     /**
      * Apply character position to directional light
      */
-    const dirLight = state.scene.children.find((item) => {
-      return item.type === "DirectionalLight";
-    });
-    dirLight.position.x = characterRef.current.translation().x + 20;
-    dirLight.position.y = characterRef.current.translation().y + 30;
-    dirLight.position.z = characterRef.current.translation().z + 10;
-    dirLight.target.position.copy(characterRef.current.translation());
+    if (dirLight) {
+      dirLight.position.x = currentPos.x + 20;
+      dirLight.position.y = currentPos.y + 30;
+      dirLight.position.z = currentPos.z + 10;
+      dirLight.target.position.copy(currentPos);
+    }
 
     /**
      * Getting all the useful keys from useKeyboardControls
@@ -406,20 +492,15 @@ export default function Character() {
     /**
      *  Camera movement
      */
-    pivotPosition.set(
-      characterRef.current.translation().x,
-      characterRef.current.translation().y + 0.5,
-      characterRef.current.translation().z
-    );
-    pivot.position.lerp(pivotPosition, 0.2);
+    pivotPosition.set(currentPos.x, currentPos.y + 0.5, currentPos.z);
+    pivot.position.lerp(pivotPosition, 1 - Math.exp(-camFollowMult * delta));
     state.camera.lookAt(pivot.position);
 
     /**
      * Ray casting detect if on ground
      */
-    const origin = characterRef.current.translation();
-    const rayCast = new rapier.Ray(origin, rayDir);
-    const rayHit = world.castRay(
+    rayOrigin.addVectors(currentPos, rayOriginOffest);
+    rayHit = world.castRay(
       rayCast,
       rayLength,
       true,
@@ -429,9 +510,11 @@ export default function Character() {
     );
 
     if (rayHit && rayHit.toi < floatingDis + 0.1) {
-      setCanJump(true);
+      if (slopeRayHit && actualSlopeAngle < 1) {
+        canJump = true;
+      }
     } else {
-      setCanJump(false);
+      canJump = false;
     }
 
     /**
@@ -439,12 +522,17 @@ export default function Character() {
      */
     if (rayHit && canJump) {
       const rayHitObjectBodyType = rayHit.collider.parent().bodyType();
+      const rayHitObjectBodyMass = rayHit.collider.parent().mass();
       // Body type 0 is rigid body, body type 1 is fixed body, body type 2 is kinematic body
-      if (rayHitObjectBodyType === 0 || rayHitObjectBodyType === 2) {
-        setIsOnMovingObject(true);
+      // And iff it stands on big mass object (>0.5)
+      if (
+        (rayHitObjectBodyType === 0 || rayHitObjectBodyType === 2) &&
+        rayHitObjectBodyMass > 0.5
+      ) {
+        isOnMovingObject = true;
         // Calculate distance between character and moving object
         distanceFromCharacterToObject
-          .copy(characterRef.current.translation())
+          .copy(currentPos)
           .sub(rayHit.collider.parent().translation());
         // Moving object linear velocity
         const movingObjectLinvel = rayHit.collider.parent().linvel();
@@ -465,7 +553,7 @@ export default function Character() {
             ).z
         );
       } else {
-        setIsOnMovingObject(false);
+        isOnMovingObject = false;
         movingObjectVelocity.set(0, 0, 0);
       }
     }
@@ -474,8 +562,8 @@ export default function Character() {
      * Slope ray casting detect if on slope
      */
     slopeRayOriginRef.current.getWorldPosition(slopeRayorigin);
-    const slopeRayCast = new rapier.Ray(slopeRayorigin, slopeRayDir);
-    const slopeRayHit = world.castRay(
+    slopeRayorigin.y = rayOrigin.y;
+    slopeRayHit = world.castRay(
       slopeRayCast,
       slopeRayLength,
       true,
@@ -485,40 +573,50 @@ export default function Character() {
     );
 
     // Calculate slope angle
+    if (slopeRayHit) {
+      actualSlopeNormal = slopeRayHit.collider.castRayAndGetNormal(
+        slopeRayCast,
+        slopeRayLength
+      )?.normal;
+      actualSlopeNormalVec?.set(
+        actualSlopeNormal.x,
+        actualSlopeNormal.y,
+        actualSlopeNormal.z
+      );
+      actualSlopeAngle = actualSlopeNormalVec?.angleTo(floorNormal);
+    }
     if (slopeRayHit && rayHit && slopeRayHit.toi < floatingDis + 0.5) {
       if (canJump) {
         slopeAngle = Math.atan(
           (rayHit.toi - slopeRayHit.toi) / slopeRayOriginOffest
         ).toFixed(2);
-      } else {
-        slopeAngle = null;
       }
+    } else {
+      slopeAngle = null;
     }
 
     /**
      * Apply floating force
      */
-    if (rayHit && !jump && canJump) {
-      if (rayHit != null) {
-        // console.log(rayHit.collider.castRayAndGetNormal(rayCast,rayLength,true).normal);
-        const floatingForce =
+    if (rayHit != null) {
+      if (!jump && canJump) {
+        floatingForce =
           springK * (floatingDis - rayHit.toi) -
           characterRef.current.linvel().y * dampingC;
         characterRef.current.applyImpulse(
-          springDirVec.set(0, floatingForce, 0),
+          springDirVec.set(0, floatingForce, 0)
         );
 
         // Apply opposite force to standing object
         characterMassForce.set(
           0,
-          -characterRef.current.mass() * characterRef.current.gravityScale(),
+          (-characterRef.current.mass() * characterRef.current.gravityScale()) /
+            10,
           0
         );
-        rayHit.collider.parent().applyImpulseAtPoint(
-          characterMassForce,
-          characterRef.current.translation(),
-          true
-        );
+        rayHit.collider
+          .parent()
+          .applyImpulseAtPoint(characterMassForce, currentPos, true);
       }
     }
 
@@ -555,8 +653,20 @@ export default function Character() {
         0,
         (movingObjectVelocity.z - currentVel.z) * dragDampingC * 2
       );
-      characterRef.current.applyImpulse(dragForce,true);
+      characterRef.current.applyImpulse(dragForce, true);
     }
+
+    /**
+     * Apply auto balance force to the character
+     */
+    if (autoBalance) {
+      autoBalanceCharacter();
+    }
+
+    /**
+     * Camera collision detect
+     */
+    cameraCollisionDetect(characterRef.current, delta);
   });
 
   return (
@@ -568,17 +678,24 @@ export default function Character() {
     >
       <CapsuleCollider args={[0.35, 0.3]} />
       <group ref={characterModelRef}>
-        <Player scale={0.045} position={[0,-0.6,0]} />
-
-        <mesh position={[0, 0, slopeRayOriginOffest]} ref={slopeRayOriginRef}>
-          <boxGeometry args={[0.1, 0.1, 0.1]} />
+        <mesh
+          position={[
+            rayOriginOffest.x,
+            rayOriginOffest.y,
+            rayOriginOffest.z + slopeRayOriginOffest,
+          ]}
+          ref={slopeRayOriginRef}
+        >
+          <boxGeometry args={[0.15, 0.15, 0.15]} />
         </mesh>
-        
         <mesh castShadow>
           <capsuleGeometry args={[0.3, 0.7]} />
           <meshStandardMaterial color="mediumpurple" />
         </mesh>
- 
+        <mesh castShadow position={[0, 0.2, 0.2]}>
+          <boxGeometry args={[0.5, 0.2, 0.3]} />
+          <meshStandardMaterial color="mediumpurple" />
+        </mesh>
       </group>
     </RigidBody>
   );

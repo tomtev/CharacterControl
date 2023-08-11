@@ -10,15 +10,16 @@ import RoughPlane from "./RoughPlane.jsx";
 import RigidObjects from "./RigidObjects.jsx";
 import FloatingPlatform from "./FloatingPlatform.jsx";
 import DynamicPlatforms from "./DynamicPlatforms.jsx";
+import ShotCube from "./ShotCube";
 import { useControls } from "leva";
 
 export default function Experience() {
   /**
    * Debug settings
    */
-  const {physics} = useControls("World Settings",{
-    physics: false
-  })
+  const { physics } = useControls("World Settings", {
+    physics: true,
+  });
 
   /**
    * Keyboard control preset
@@ -39,8 +40,7 @@ export default function Experience() {
       <Perf position="top-left" />
 
       <Grid
-        infiniteGrid
-        followCamera
+        args={[300, 300]}
         sectionColor={"lightgray"}
         cellColor={"gray"}
         position={[0, -0.99, 0]}
@@ -48,7 +48,7 @@ export default function Experience() {
 
       <Lights />
 
-      <Physics debug={physics} timeStep="vary" >
+      <Physics debug={physics} timeStep="vary">
         {/* Character */}
         <KeyboardControls map={keyboardMap}>
           <Character />
@@ -60,9 +60,23 @@ export default function Experience() {
         {/* Slopes and stairs */}
         <Slopes />
 
+        {/* Small steps */}
+        <Steps />
+
+        {/* Rigid body objects */}
+        <RigidObjects />
+
+        {/* Floating platform */}
+        <FloatingPlatform />
+
+        {/* Dynamic platforms */}
+        <DynamicPlatforms />
 
         {/* Floor */}
         <Floor />
+
+        {/* Shoting cubes */}
+        <ShotCube />
       </Physics>
     </>
   );
