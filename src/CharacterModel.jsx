@@ -5,7 +5,7 @@ import useGame from "./stores/useGame";
 
 export default function CharacterModel(props) {
   // Change the character src to yours
-  const character = useGLTF("./Animated Platformer Character.glb");
+  const character = useGLTF("./man.gltf");
   const animations = useAnimations(character.animations, character.scene);
 
   /**
@@ -18,14 +18,14 @@ export default function CharacterModel(props) {
 
   // Rename your character animations here
   const animationSet = {
-    idle: "CharacterArmature|Idle",
-    walk: "CharacterArmature|Walk",
-    run: "CharacterArmature|Run",
-    jump: "CharacterArmature|Jump",
-    jumpIdle: "CharacterArmature|Jump_Idle",
-    jumpLand: "CharacterArmature|Jump_Land",
-    duck: "CharacterArmature|Duck", // This is for falling from high sky
-    wave: "CharacterArmature|Wave",
+    idle: "Idle 01",
+    walk: "Walk 01",
+    run: "Run 01",
+    jump: "Jump 01",
+    jumpIdle: "Fall 01",
+    jumpLand: "Idle 01",
+    duck: "Idle to Crouch 01", // This is for falling from high sky
+    wave: "Wave 01",
   };
 
   useEffect(() => {
@@ -50,6 +50,7 @@ export default function CharacterModel(props) {
     // Play animation
     const action =
       animations.actions[curAnimation ? curAnimation : animationSet.jumpIdle];
+      
 
     // For jump and jump land animation, only play once and clamp when finish
     if (
@@ -78,7 +79,8 @@ export default function CharacterModel(props) {
     <Suspense fallback={<capsuleGeometry args={[0.3, 0.7]} />}>
       <primitive
         object={character.scene}
-        scale={0.45}
+        scale={0.044}
+        rotation={[0, Math.PI, 0]}
         position={[0, -0.9, 0]}
       />
       {/* Default capsule modle */}

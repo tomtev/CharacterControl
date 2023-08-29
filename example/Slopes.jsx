@@ -36,8 +36,7 @@ export default function Slopes() {
       <RigidBody type="fixed" colliders="trimesh" rotation={[0, Math.PI, 0]}>
       <primitive object={slopes.scene} scale={[1,1,1]} position={[0,-48,0]} />
       </RigidBody>
-<<<<<<< HEAD:src/Slopes.jsx
-=======
+
       <Text
         rotation={[0, Math.PI, 0]}
         position={[3.5, 3, 0]}
@@ -62,7 +61,6 @@ export default function Slopes() {
       >
         62.7 Deg
       </Text>
->>>>>>> upstream/main:example/Slopes.jsx
     </group>
   );
 }
