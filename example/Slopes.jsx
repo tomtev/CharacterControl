@@ -33,10 +33,6 @@ export default function Slopes() {
 
   return (
     <group position={[5, 0, 30]}>
-      <RigidBody type="fixed" colliders="trimesh" rotation={[0, Math.PI, 0]}>
-      <primitive object={slopes.scene} scale={[1,1,1]} position={[0,-48,0]} />
-      </RigidBody>
-
       <Text
         rotation={[0, Math.PI, 0]}
         position={[3.5, 3, 0]}

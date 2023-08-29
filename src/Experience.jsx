@@ -53,7 +53,6 @@ export default function Experience() {
         <KeyboardControls map={keyboardMap}>
           {/* Character Control */}
           <CharacterController>
-            {/* Replace your model here */}
             <CharacterModel />
           </CharacterController>
         </KeyboardControls>

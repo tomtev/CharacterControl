@@ -22,9 +22,12 @@ export default function CharacterModel(props) {
     walk: "Walk 01",
     run: "Run 01",
     jump: "Jump 01",
+    hit: "Get Hit 01",
     jumpIdle: "Fall 01",
-    jumpLand: "Idle 01",
-    duck: "Idle 01", // This is for falling from high sky
+    attack: "Attack 01",
+    jumpAttack: "Air Attack 01",
+    jumpLand: "Land 01",
+    duck: "Land 01", // This is for falling from high sky
     wave: "Wave 01",
   };
 
