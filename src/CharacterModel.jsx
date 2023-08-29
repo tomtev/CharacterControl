@@ -24,7 +24,7 @@ export default function CharacterModel(props) {
     jump: "Jump 01",
     jumpIdle: "Fall 01",
     jumpLand: "Idle 01",
-    duck: "Idle to Crouch 01", // This is for falling from high sky
+    duck: "Idle 01", // This is for falling from high sky
     wave: "Wave 01",
   };
 
