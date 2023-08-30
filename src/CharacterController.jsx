@@ -42,7 +42,7 @@ export default function CharacterController(props) {
     "Character Controls",
     {
       maxVelLimit: {
-        value: 2.2,
+        value: 5,
         min: 0,
         max: 10,
         step: 0.01,
@@ -54,13 +54,13 @@ export default function CharacterController(props) {
         step: 0.01,
       },
       turnSpeed: {
-        value: 10,
+        value: 15,
         min: 5,
         max: 30,
         step: 0.1,
       },
       sprintMult: {
-        value: 3,
+        value: 1.5,
         min: 1,
         max: 5,
         step: 0.01,

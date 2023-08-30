@@ -19,15 +19,16 @@ export default function CharacterModel(props) {
   // Rename your character animations here
   const animationSet = {
     idle: "Idle 01",
-    walk: "Walk 01",
-    run: "Run 01",
+    walkSlow: "Walk 01",
+    walk: "Run 01",
+    run: "Sprint 01",
     jump: "Jump 01",
     hit: "Get Hit 01",
     jumpIdle: "Fall 01",
     attack: "Attack 01",
     jumpAttack: "Air Attack 01",
     jumpLand: "Land 01",
-    duck: "Land 01", // This is for falling from high sky
+    duck: "Fall 01", // This is for falling from high sky
     wave: "Wave 01",
   };
 
@@ -79,22 +80,13 @@ export default function CharacterModel(props) {
   }, [curAnimation]);
 
   return (
-    <Suspense fallback={<capsuleGeometry args={[0.3, 0.7]} />}>
+    <Suspense fallback={<capsuleGeometry args={[0.4, 0.7]} />}>
       <primitive
         object={character.scene}
-        scale={0.044}
+        scale={0.04}
         rotation={[0, Math.PI, 0]}
         position={[0, -0.9, 0]}
       />
-      {/* Default capsule modle */}
-      {/* <mesh castShadow>
-        <capsuleGeometry args={[0.3, 0.7]} />
-        <meshStandardMaterial color="mediumpurple" />
-      </mesh>
-      <mesh castShadow position={[0, 0.2, 0.2]}>
-        <boxGeometry args={[0.5, 0.2, 0.3]} />
-        <meshStandardMaterial color="mediumpurple" />
-      </mesh> */}
     </Suspense>
   );
 }

@@ -33,30 +33,9 @@ export default function Slopes() {
 
   return (
     <group position={[5, 0, 30]}>
-      <Text
-        rotation={[0, Math.PI, 0]}
-        position={[3.5, 3, 0]}
-        color="black"
-        fontSize={0.5}
-      >
-        23.5 Deg
-      </Text>
-      <Text
-        rotation={[0, Math.PI, 0]}
-        position={[0, 4.5, 0]}
-        color="black"
-        fontSize={0.5}
-      >
-        43.1 Deg
-      </Text>
-      <Text
-        rotation={[0, Math.PI, 0]}
-        position={[-3.5, 7, 0]}
-        color="black"
-        fontSize={0.5}
-      >
-        62.7 Deg
-      </Text>
+      <RigidBody type="fixed" colliders="trimesh" rotation={[0, Math.PI, 0]}>
+      <primitive object={slopes.scene} scale={[1,1,1]} position={[0,-48,0]} />
+      </RigidBody>
     </group>
   );
 }

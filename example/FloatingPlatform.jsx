@@ -110,15 +110,7 @@ export default function FloatingPlatform() {
     <>
       {/* Platform 1 */}
       <RigidBody position={[0, 5, -10]} mass={1} ref={floatingPlateRef}>
-        <Text
-          scale={0.5}
-          color="black"
-          maxWidth={10}
-          textAlign="center"
-          position={[0, 2.5, 0]}
-        >
-          Floating Platform push to move
-        </Text>
+
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
           <meshStandardMaterial color={"lightsteelblue"} />
@@ -127,15 +119,7 @@ export default function FloatingPlatform() {
 
       {/* Platform 2 */}
       <RigidBody position={[7, 5, -10]} mass={1} ref={floatingPlateRef2}>
-        <Text
-          scale={0.5}
-          color="black"
-          maxWidth={10}
-          textAlign="center"
-          position={[0, 2.5, 0]}
-        >
-          Floating Platform push to rotate
-        </Text>
+     
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
           <meshStandardMaterial color={"lightsteelblue"} />

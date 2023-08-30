@@ -52,15 +52,7 @@ export default function DynamicPlatforms() {
     <>
       {/* Moving platform */}
       <RigidBody type="kinematicPosition" ref={sideMovePlatformRef}>
-        <Text
-          scale={0.5}
-          color="black"
-          maxWidth={10}
-          textAlign="center"
-          position={[0, 2.5, 0]}
-        >
-          Kinematic Moving Platform
-        </Text>
+      
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
           <meshStandardMaterial color={"moccasin"} />
@@ -69,16 +61,7 @@ export default function DynamicPlatforms() {
 
       {/* Elevating platform */}
       <RigidBody type="kinematicPosition" position={[-25, 0, 0]} ref={verticalMovePlatformRef}>
-        <Text
-          scale={0.5}
-          color="black"
-          maxWidth={10}
-          textAlign="center"
-          position={[0, 2.5, 0]}
-          rotation={[0, Math.PI / 2, 0]}
-        >
-          Kinematic Elevating Platform
-        </Text>
+   
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
           <meshStandardMaterial color={"moccasin"} />
@@ -91,15 +74,7 @@ export default function DynamicPlatforms() {
         position={[-25, -0.5, -10]}
         ref={rotatePlatformRef}
       >
-        <Text
-          scale={0.5}
-          color="black"
-          maxWidth={10}
-          textAlign="center"
-          position={[0, 2.5, 0]}
-        >
-          Kinematic Rotating Platform
-        </Text>
+  
         <mesh receiveShadow castShadow>
           <boxGeometry args={[5, 0.2, 5]} />
           <meshStandardMaterial color={"moccasin"} />
@@ -107,15 +82,7 @@ export default function DynamicPlatforms() {
       </RigidBody>
 
       {/* Rotating drum */}
-      <Text
-        scale={0.5}
-        color="black"
-        maxWidth={10}
-        textAlign="center"
-        position={[-15, 2.5, -15]}
-      >
-        Kinematic Rotating Drum
-      </Text>
+
       <RigidBody
         colliders={false}
         type="kinematicPosition"

@@ -1,16 +1,11 @@
 import { Grid, KeyboardControls } from "@react-three/drei";
-import { Perf } from "r3f-perf";
 import { Physics } from "@react-three/rapier";
 import CharacterController from "./CharacterController.jsx";
 import Floor from "../example/Floor.jsx";
 import Lights from "../example/Lights.jsx";
-import Steps from "../example/Steps.jsx";
 import Slopes from "../example/Slopes.jsx";
 import RoughPlane from "../example/RoughPlane.jsx";
-import RigidObjects from "../example/RigidObjects.jsx";
-import FloatingPlatform from "../example/FloatingPlatform.jsx";
-import DynamicPlatforms from "../example/DynamicPlatforms.jsx";
-import ShotCube from "../example/ShotCube";
+
 import { useControls } from "leva";
 import CharacterModel from "./CharacterModel.jsx";
 
@@ -37,8 +32,6 @@ export default function Experience() {
 
   return (
     <>
-      <Perf position="top-left" />
-
       <Grid
         args={[300, 300]}
         sectionColor={"lightgray"}
@@ -57,29 +50,13 @@ export default function Experience() {
           </CharacterController>
         </KeyboardControls>
 
-        {/* Rough plan */}
         <RoughPlane />
 
-        {/* Slopes and stairs */}
         <Slopes />
 
-        {/* Small steps */}
-        <Steps />
 
-        {/* Rigid body objects */}
-        <RigidObjects />
-
-        {/* Floating platform */}
-        <FloatingPlatform />
-
-        {/* Dynamic platforms */}
-        <DynamicPlatforms />
-
-        {/* Floor */}
         <Floor />
 
-        {/* Shoting cubes */}
-        <ShotCube />
       </Physics>
     </>
   );
