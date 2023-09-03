@@ -251,11 +251,6 @@ export default function CharacterController(props) {
   const objectAngvelToLinvel = useMemo(() => new THREE.Vector3());
 
   /**
-   * Initial light setup
-   */
-  let dirLight = null;
-
-  /**
    * Follow camera initial setups from props
    */
   const cameraSetups = {
@@ -455,11 +450,6 @@ export default function CharacterController(props) {
   };
 
   useEffect(() => {
-    // Initialize directional light
-    dirLight = characterModelRef.current.parent.parent.children.find((item) => {
-      return item.type === "DirectionalLight";
-    });
-
     // Animation subscribe
     const unSubscribeAnimation = useGame.subscribe(
       (state) => state.curAnimation,
@@ -489,12 +479,6 @@ export default function CharacterController(props) {
     /**
      * Apply character position to directional light
      */
-    if (dirLight) {
-      dirLight.position.x = currentPos.x + 20;
-      dirLight.position.y = currentPos.y + 30;
-      dirLight.position.z = currentPos.z + 10;
-      dirLight.target.position.copy(currentPos);
-    }
 
     /**
      * Getting all the useful keys from useKeyboardControls
@@ -766,16 +750,20 @@ export default function CharacterController(props) {
     }
   });
 
+  const pointer = useRef(null)
+
+
+
   return (
     <RigidBody
       colliders={false}
-      position={[0, 3, 0]}
-      friction={-0.5}
+      position={[0, 10, 0]}
+      friction={-0.1}
       gravityScale={1.2}
       ref={characterRef}
     >
-      <CapsuleCollider args={[0.35, 0.3]} />
-      <group ref={characterModelRef}>
+      <CapsuleCollider  name="player" args={[0.4, 0.3]} position={[0,0.25,0]} />
+      <group  ref={characterModelRef}>
         <mesh
           position={[
             rayOriginOffest.x,
@@ -784,6 +772,7 @@ export default function CharacterController(props) {
           ]}
           ref={slopeRayOriginRef}
           visible={showSlopeRayOrigin}
+
         >
           {/* This is used for positioning the slope ray origin */}
           <boxGeometry args={[0.15, 0.15, 0.15]} />

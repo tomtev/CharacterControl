@@ -3,8 +3,7 @@ import { Physics } from "@react-three/rapier";
 import CharacterController from "./CharacterController.jsx";
 import Floor from "../example/Floor.jsx";
 import Lights from "../example/Lights.jsx";
-import Slopes from "../example/Slopes.jsx";
-import RoughPlane from "../example/RoughPlane.jsx";
+import Map from "./Map.jsx";
 
 import { useControls } from "leva";
 import CharacterModel from "./CharacterModel.jsx";
@@ -32,12 +31,7 @@ export default function Experience() {
 
   return (
     <>
-      <Grid
-        args={[300, 300]}
-        sectionColor={"lightgray"}
-        cellColor={"gray"}
-        position={[0, -0.99, 0]}
-      />
+  
 
       <Lights />
 
@@ -49,14 +43,7 @@ export default function Experience() {
             <CharacterModel />
           </CharacterController>
         </KeyboardControls>
-
-        <RoughPlane />
-
-        <Slopes />
-
-
-        <Floor />
-
+        <Map/>
       </Physics>
     </>
   );

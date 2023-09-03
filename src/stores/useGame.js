@@ -9,6 +9,7 @@ export default create(
        */
       // Initial animation
       curAnimation: null,
+      curMapChunk: null,
       animationSet: {},
 
       initializeAnimationSet: (animationSet) => {
@@ -20,6 +21,12 @@ export default create(
         });
       },
 
+      setMapChunk: (mapChunk) => {
+        set((state) => {
+          return { curMapChunk: mapChunk };
+        });
+      },
+      
       idle: () => {
         set((state) => {
           if (state.curAnimation === state.animationSet.jumpIdle) {

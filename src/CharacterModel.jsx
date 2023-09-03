@@ -83,7 +83,7 @@ export default function CharacterModel(props) {
     <Suspense fallback={<capsuleGeometry args={[0.4, 0.7]} />}>
       <primitive
         object={character.scene}
-        scale={0.04}
+        scale={0.033}
         rotation={[0, Math.PI, 0]}
         position={[0, -0.9, 0]}
       />
