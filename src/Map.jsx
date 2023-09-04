@@ -37,7 +37,6 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
       "Red_Mushroom",
     ];
 
-
     const noCollisionObjects = [];
 
     gltf.scene.traverseVisible((obj) => {
@@ -57,7 +56,6 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
       if (noCollision.includes(obj.name)) {
         noCollisionObjects.push(gltf.scene.getObjectByName(obj.name));
       }
-
     });
 
     noCollision.forEach((object) => {
@@ -67,7 +65,7 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
     /*/* Add to cache */
     mapCache[chunk.file] = {
       map: gltf.scene,
-      noCollisionObjects: noCollisionObjects, 
+      noCollisionObjects: noCollisionObjects,
     };
   }
 
@@ -82,7 +80,7 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
         {/* this is the invisible mesh that is used to check if the chunk is in view*/}
         <mesh
           ref={inView}
-          position={[chunk.x,, (chunkSize * 2) / 2 -50, chunk.z]}
+          position={[chunk.x, , (chunkSize * 2) / 2 - 50, chunk.z]}
           scale={(1, 1, 1)}
         >
           <boxGeometry args={[chunkSize - 5, chunkSize * 2, chunkSize - 5]} />
@@ -93,27 +91,37 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
           />
         </mesh>
 
+        <Html position={[chunk.x, -40, chunk.z]}>
+          {chunk.z + "_" + chunk.x}
+        </Html>
+
         {isClose && isIntersecting && (
           <>
             {mapCache[chunk.file].noCollisionObjects.map((object, i) => (
-              <primitive key={i} object={object}  position={[chunk.x, -50, chunk.z]} />
+              <primitive
+                key={i}
+                object={object}
+                position={[chunk.x, -50, chunk.z]}
+              />
             ))}
           </>
         )}
-        
+
         {isIntersecting && (
           <RigidBody
             type="fixed"
             colliders={isClose && isIntersecting ? "trimesh" : false}
           >
-            <primitive object={mapCache[chunk.file].map} position={[chunk.x, -50, chunk.z]} />
+            <primitive
+              object={mapCache[chunk.file].map}
+              position={[chunk.x, -50, chunk.z]}
+            />
           </RigidBody>
         )}
       </group>
     </Suspense>
   );
 };
-
 
 const chunkSize = 25;
 const startX = 50;
@@ -137,13 +145,17 @@ const getChunks = ({ x, z, expand = 3 }) => {
 
       // Check if the chunk coordinates are within the defined bounds
       if (
-        xCoord >= minXchunk && xCoord <= maxXchunk &&
-        zCoord >= maxYchunk && zCoord <= minYchunk
+        xCoord >= minXchunk &&
+        xCoord <= maxXchunk &&
+        zCoord >= maxYchunk &&
+        zCoord <= minYchunk
       ) {
         chunks.push({
           x: xCoord,
           z: zCoord,
-          file: `chunk${startX + xCoord}-${startY + zCoord}-lvl-1-transformed.glb`,
+          file: `chunk${startX + xCoord}-${
+            startY + zCoord
+          }-lvl-1-transformed.glb`,
           key: col + "_" + row,
         });
       }
@@ -151,7 +163,6 @@ const getChunks = ({ x, z, expand = 3 }) => {
   }
   return chunks;
 };
-
 
 const getChunkIds = ({ x, z, expand = 2 }) => {
   const xPos = Math.round(x / chunkSize);
@@ -188,8 +199,8 @@ export default function Map() {
           chunkPos[0] !== refState.current.playerChunkPos[0] ||
           chunkPos[1] !== refState.current.playerChunkPos[1]
         ) {
-          setChunks(getChunks({ x: pos.x, z: pos.z, expand: 4 }));
-          setCloseChunks(getChunkIds({ x: pos.x, z: pos.z, expand: 2 }));
+          setChunks(getChunks({ x: pos.x, z: pos.z, expand: 3 }));
+          setCloseChunks(getChunkIds({ x: pos.x, z: pos.z, expand: 1 }));
           setCurrentChunk(getChunkIds({ x: pos.x, z: pos.z, expand: 0 }));
         }
       }

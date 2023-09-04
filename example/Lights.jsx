@@ -31,9 +31,7 @@ export default function Lights() {
 
       <ambientLight intensity={0.1} />
       <EffectComposer>
-        <Bloom luminanceThreshold={0.3} luminanceSmoothing={1} height={300} />
-        <DepthOfField focusDistance={0} focalLength={0.1} bokehScale={0.5} height={480} />
-      
+        <Bloom luminanceThreshold={0.3} luminanceSmoothing={1} height={300} />      
       </EffectComposer>
     </>
   );
