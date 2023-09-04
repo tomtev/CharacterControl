@@ -114,9 +114,15 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
   );
 };
 
+
 const chunkSize = 25;
-const startX = 0 ;
-const startY = 0;
+const startX = 50;
+const startY = -50;
+
+const minXchunk = -200;
+const maxXchunk = 300;
+const minYchunk = 25;
+const maxYchunk = -475;
 
 const getChunks = ({ x, z, expand = 3 }) => {
   const xPos = Math.round(x / chunkSize);
@@ -126,18 +132,26 @@ const getChunks = ({ x, z, expand = 3 }) => {
 
   for (let col = xPos - expand; col <= xPos + expand; col++) {
     for (let row = zPos - expand; row <= zPos + expand; row++) {
-      chunks.push({
-        x: col * chunkSize,
-        z: row * chunkSize,
-        file: `chunk${startX + col * chunkSize}-${
-          startY + row * chunkSize
-        }-lvl-1-transformed.glb`,
-        key: col + "_" + row,
-      });
+      const xCoord = col * chunkSize;
+      const zCoord = row * chunkSize;
+
+      // Check if the chunk coordinates are within the defined bounds
+      if (
+        xCoord >= minXchunk && xCoord <= maxXchunk &&
+        zCoord >= maxYchunk && zCoord <= minYchunk
+      ) {
+        chunks.push({
+          x: xCoord,
+          z: zCoord,
+          file: `chunk${startX + xCoord}-${startY + zCoord}-lvl-1-transformed.glb`,
+          key: col + "_" + row,
+        });
+      }
     }
   }
   return chunks;
 };
+
 
 const getChunkIds = ({ x, z, expand = 2 }) => {
   const xPos = Math.round(x / chunkSize);
@@ -174,8 +188,8 @@ export default function Map() {
           chunkPos[0] !== refState.current.playerChunkPos[0] ||
           chunkPos[1] !== refState.current.playerChunkPos[1]
         ) {
-          setChunks(getChunks({ x: pos.x, z: pos.z, expand: 5 }));
-          setCloseChunks(getChunkIds({ x: pos.x, z: pos.z, expand: 1 }));
+          setChunks(getChunks({ x: pos.x, z: pos.z, expand: 4 }));
+          setCloseChunks(getChunkIds({ x: pos.x, z: pos.z, expand: 2 }));
           setCurrentChunk(getChunkIds({ x: pos.x, z: pos.z, expand: 0 }));
         }
       }
