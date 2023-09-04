@@ -8,7 +8,7 @@ let mapCache = {};
 
 const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
   if (!mapCache[chunk.file]) {
-    const gltf = useGLTF("/jerusalem-25x25/" + chunk.file);
+    const gltf = useGLTF("/maps-25x25/" + chunk.file);
     const noCollision = [
       "Wheat",
       "Grass",
@@ -115,8 +115,8 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
 };
 
 const chunkSize = 25;
-const startX = -100 ;
-const startY = -100;
+const startX = 0 ;
+const startY = 0;
 
 const getChunks = ({ x, z, expand = 3 }) => {
   const xPos = Math.round(x / chunkSize);
