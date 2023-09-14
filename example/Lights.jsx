@@ -1,4 +1,4 @@
-import { useHelper } from "@react-three/drei";
+import { useHelper, Sky } from "@react-three/drei";
 import { useRef } from "react";
 import * as THREE from "three";
 import {
@@ -6,7 +6,7 @@ import {
   DepthOfField,
   Bloom,
   Vignette,
-} from '@react-three/postprocessing'
+} from "@react-three/postprocessing";
 
 export default function Lights() {
   const directionalLightRef = useRef();
@@ -15,23 +15,22 @@ export default function Lights() {
 
   return (
     <>
-
       <spotLight
-          position={[10, 200, 100]}
-          intensity={1}
-          castShadow
-          shadow-mapSize-height={2024}
-          shadow-mapSize-width={2024}
-          color={'pink'}
-          shadow-radius={5}
-        />
+        position={[100, 100, 100]}
+        intensity={1}
+        castShadow
+        shadow-bias={-0.00001}
+        shadow-mapSize-height={6024}
+        shadow-mapSize-width={6024}
+        color={"pink"}
+      />
 
-        <color attach='background' args={['lightblue']} />
-        <fog attach='fog' args={['lightblue', 0, 200]} />
+      <fog attach="fog" args={["lightblue", 50, 200]} />
+      <Sky sunPosition={[100, 100, 100]} />
 
-      <ambientLight intensity={0.1} />
+      <ambientLight intensity={.3} />
       <EffectComposer>
-        <Bloom luminanceThreshold={0.3} luminanceSmoothing={1} height={300} />      
+        <Bloom luminanceThreshold={2} luminanceSmoothing={1} height={500} />
       </EffectComposer>
     </>
   );

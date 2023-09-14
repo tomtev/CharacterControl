@@ -3,7 +3,9 @@ import { Physics } from "@react-three/rapier";
 import CharacterController from "./CharacterController.jsx";
 import Floor from "../example/Floor.jsx";
 import Lights from "../example/Lights.jsx";
-import Map from "./Map.jsx";
+//import Map from "./Map.jsx";
+import { Model } from './Gta'
+
 
 import { useControls } from "leva";
 import CharacterModel from "./CharacterModel.jsx";
@@ -43,7 +45,7 @@ export default function Experience() {
             <CharacterModel />
           </CharacterController>
         </KeyboardControls>
-        <Map/>
+        <Model/>
       </Physics>
     </>
   );
