@@ -21,10 +21,10 @@ export default function Lights() {
   return (
     <>
       <spotLight
-        position={[10, 200, 100]}
-        intensity={2}
+        position={[100, 300, 100]}
+        intensity={1}
         castShadow
-        shadow-bias={-0.000001}
+        shadow-bias={-0.00001}
         shadow-mapSize-height={2024}
         shadow-mapSize-width={2024}
         color={"pink"}
