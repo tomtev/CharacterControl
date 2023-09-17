@@ -11,9 +11,9 @@ root.render(
   <Leva collapsed/>
   <Canvas
     shadows
-    dpr={[0.5, 0.8]}
+    dpr={[0.5, 0.66]}
     camera={{
-      fov: 90,
+      fov: 60,
       near: 0.1,
       far: 1000,
       position: [0, 0, 0],

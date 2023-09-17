@@ -4,7 +4,7 @@ import CharacterController from "./CharacterController.jsx";
 import Floor from "../example/Floor.jsx";
 import Lights from "../example/Lights.jsx";
 //import Map from "./Map.jsx";
-import { Model } from './Gta'
+import { Model } from './AnotherMap'
 
 
 import { useControls } from "leva";

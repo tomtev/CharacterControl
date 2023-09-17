@@ -15,6 +15,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@andersonmancini/lens-flare@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@andersonmancini/lens-flare@npm:1.0.1"
+  peerDependencies:
+    "@react-three/drei": ^9.58.5
+    "@react-three/fiber": ^8.13.0
+    maath: ^0.5.3
+    postprocessing: ^6.31.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    three: ^0.152.2
+  checksum: 456fe76d34bf4e0565610c43f7a0cd22e5959f10e4a72bed6e6fb55c736480246f37a797bae4ff38b42da2dfd9f5b8c6400c4c6242fb1492fcd15dac55aea835
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/code-frame@npm:7.22.5"
@@ -1458,6 +1473,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "character-contrller@workspace:."
   dependencies:
+    "@andersonmancini/lens-flare": ^1.0.1
     "@react-three/drei": ^9.77.1
     "@react-three/fiber": ^8.13.3
     "@react-three/postprocessing": ^2.15.1
