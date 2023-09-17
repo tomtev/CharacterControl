@@ -14,7 +14,6 @@ import {
 import { RigidBody } from "@react-three/rapier";
 import * as THREE from "three";
 import { extend } from "@react-three/fiber";
-import { Water } from "three/examples/jsm/objects/Water.js";
 
 export function Model(props) {
   const { nodes, materials } = useGLTF("/model-transformed.glb");
@@ -108,25 +107,27 @@ export function Model(props) {
           receiveShadow
           
           geometry={nodes.Stationary_Water.geometry}
-          position={[0, .1, 0]}
+          position={[0, 0, 0]}
         >
-          <meshPhongMaterial color={'blue'} transparent={true} opacity={.8} />
+          <meshPhongMaterial color={'darkblue'} transparent={true} opacity={.9} />
         </mesh>
 
+        <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.Bamboo_Sapling.geometry}
+        material={materials.Bamboo_Sapling}
+      />
+      {/* 
         <mesh
           castShadow
           receiveShadow
           geometry={nodes.Stationary_Water.geometry}
         >
           <MeshTransmissionMaterial transmissionSampler={true}  roughness={0.2} />
-        </mesh>
+        </mesh>*/}
       </RigidBody>
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Bamboo_Sapling.geometry}
-        material={materials.Bamboo_Sapling}
-      />
+
       <mesh
         castShadow
         receiveShadow

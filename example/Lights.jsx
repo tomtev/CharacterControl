@@ -1,12 +1,17 @@
 import { useHelper, Sky, Stars } from "@react-three/drei";
-import { useRef } from "react";
+import { useRef, Suspense } from "react";
 import * as THREE from "three";
 import {
   EffectComposer,
   DepthOfField,
+  Autofocus,
+  LensFlare,
   Bloom,
+  SSAO,
+  SMAA,
   Vignette,
 } from "@react-three/postprocessing";
+import { BlendFunction } from "postprocessing";
 
 export default function Lights() {
   const directionalLightRef = useRef();
@@ -20,29 +25,31 @@ export default function Lights() {
         intensity={2}
         castShadow
         shadow-bias={-0.000001}
-        shadow-mapSize-height={6024}
-        shadow-mapSize-width={6024}
+        shadow-mapSize-height={2024}
+        shadow-mapSize-width={2024}
         color={"pink"}
       />
 
-      <fog attach="fog" args={["lightpink", 50, 200]} />
+      <fog attach="fog" args={["lightpink", 100, 200]} />
       <color attach="background" args={["lightpink"]} />
-      <ambientLight intensity={0.1} />
-      <mesh 
-        position={[0, 0, 0]}
-      >
+      <ambientLight intensity={0.2} />
+      <mesh position={[0, 0, 0]}>
         <boxBufferGeometry args={[1000, 0.1, 1000]} />
-        <meshBasicMaterial color="blue" transparent={true} opacity={.8} />
+        <meshBasicMaterial color="blue" transparent={true} opacity={0.6} />
       </mesh>
-      <Stars count={1000} scale={[1000,,1000]}></Stars>
-      <EffectComposer>
-        <Bloom
-          intensity={1} // The bloom intensity.
-          luminanceThreshold={.7} // luminance threshold. Raise this value to mask out darker elements in the scene.
-          luminanceSmoothing={0.025} // smoothness of the luminance threshold. Range is [0, 1]      
-        />
-        <Vignette eskil={false} offset={0.1} darkness={0.6} />
-      </EffectComposer>
+      <Stars count={1000} scale={[1000, 100, 1000]}></Stars>
+
+      <Suspense fallback={null}>
+        <EffectComposer multisampling={0}>
+
+          <SSAO
+            blendFunction={BlendFunction.MULTIPLY} // blend mode
+          
+          />
+          <Vignette eskil={false} offset={0.1} darkness={0.8} />
+     
+        </EffectComposer>
+      </Suspense>
     </>
   );
 }
