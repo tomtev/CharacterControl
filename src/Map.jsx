@@ -48,9 +48,7 @@ const GenerateMap = ({ isClose, isCurrent, ...chunk }) => {
         obj.material.map.minFilter = THREE.LinearMipMapLinearFilter;
 
       if (obj.material?.transparent) {
-        obj.material.depthWrite = true;
-        obj.material.alphaTest = 0.1;
-        obj.renderOrder = -1;
+  
       }
 
       if (noCollision.includes(obj.name)) {

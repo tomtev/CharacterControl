@@ -4,8 +4,9 @@ import CharacterController from "./CharacterController.jsx";
 import Floor from "../example/Floor.jsx";
 import Lights from "../example/Lights.jsx";
 //import Map from "./Map.jsx";
-import { Model } from './AnotherMap2'
-
+import { Model } from "./Highcliff";
+import { Man } from "./Man";
+import { useMemo } from "react";
 
 import { useControls } from "leva";
 import CharacterModel from "./CharacterModel.jsx";
@@ -31,12 +32,20 @@ export default function Experience() {
     { name: "triggle", keys: ["KeyF"] },
   ];
 
+  const numMen = 100; // number of men to create
+  const men = useMemo(() => {
+    const menArr = [];
+    for (let i = 0; i < numMen; i++) {
+      const x = Math.random() * 50 - 5; 
+      const z = Math.random() * 50 - 5;
+      menArr.push(<Man key={i} position={[x, 10, z]} />);
+    }
+    return menArr;
+  }, [numMen]);
+
   return (
     <>
-  
-
       <Lights />
-
       <Physics debug={physics} timeStep="vary">
         {/* Keyboard preset */}
         <KeyboardControls map={keyboardMap}>
@@ -45,7 +54,8 @@ export default function Experience() {
             <CharacterModel />
           </CharacterController>
         </KeyboardControls>
-        <Model/>
+        {men}
+        <Model />
       </Physics>
     </>
   );

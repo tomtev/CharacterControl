@@ -21,33 +21,29 @@ export default function Lights() {
   return (
     <>
       <spotLight
-        position={[100, 300, 100]}
-        intensity={1}
+        position={[100, 150, 0]}
+        intensity={1.3}
         castShadow
         shadow-bias={-0.00001}
-        shadow-mapSize-height={2024}
-        shadow-mapSize-width={2024}
+        shadow-mapSize-height={4024}
+        shadow-mapSize-width={4024}
         color={"pink"}
       />
 
-      <fog attach="fog" args={["lightpink", 100, 200]} />
+      <fog attach="fog" args={["lightpink", 120, 200]} />
+      <Stars radius={60} depth={0} count={1200} factor={2} saturation={0} fade speed={1} />
       <color attach="background" args={["lightpink"]} />
-      <ambientLight intensity={0.2} />
-      <mesh position={[0, 0, 0]}>
+      <ambientLight intensity={0.15} />
+      <mesh position={[0, 90, 0]}>
         <boxBufferGeometry args={[1000, 0.1, 1000]} />
         <meshBasicMaterial color="blue" transparent={true} opacity={0.6} />
       </mesh>
-      <Stars count={1000} scale={[1000, 100, 1000]}></Stars>
 
       <Suspense fallback={null}>
         <EffectComposer multisampling={0}>
-
-          <SSAO
-            blendFunction={BlendFunction.MULTIPLY} // blend mode
-          
-          />
-          <Vignette eskil={false} offset={0.1} darkness={0.8} />
-     
+          <SMAA></SMAA>
+          <DepthOfField focalLength={1} bokehScale={3}> </DepthOfField>
+          <Vignette eskil={true} offset={0.1} darkness={.5} />
         </EffectComposer>
       </Suspense>
     </>

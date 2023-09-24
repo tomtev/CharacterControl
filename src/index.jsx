@@ -13,9 +13,9 @@ root.render(
     shadows
     dpr={[0.5, 1]}
     camera={{
-      fov: 60,
-      near: 0.1,
-      far: 1000,
+      fov: 70,
+      near: 0.02,
+      far: 500,
       position: [0, 0, 0],
     }}
     onPointerDown={(e) => {

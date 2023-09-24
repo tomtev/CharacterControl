@@ -757,6 +757,7 @@ export default function CharacterController(props) {
   return (
     <RigidBody
       colliders={false}
+      type={'dynamic'}
       position={[0, 10, 0]}
       friction={-0.1}
       gravityScale={1.2}
