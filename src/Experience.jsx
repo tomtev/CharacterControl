@@ -32,7 +32,7 @@ export default function Experience() {
     { name: "triggle", keys: ["KeyF"] },
   ];
 
-  const numMen = 100; // number of men to create
+  const numMen = 30; // number of men to create
   const men = useMemo(() => {
     const menArr = [];
     for (let i = 0; i < numMen; i++) {
