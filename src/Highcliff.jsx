@@ -10,7 +10,6 @@ import * as THREE from "three";
 
 const getPositionsForObject = (object, vertices = 32) => {
   if (!object) return [];
-  
 
   const positions = object.geometry.attributes.position.array;
   const numVerticesPerObject = vertices;
@@ -54,6 +53,7 @@ export function Model(props) {
     "Big_Dripleaf_Stem",
     "Amethyst_Cluster",
     "Tall_Seagrass",
+    "Carrot",
     "Lantern",
     "Peony",
     "Brown_Mushroom",
@@ -105,6 +105,12 @@ export function Model(props) {
     16
   );
 
+  const carrotPositions = getPositionsForObject(
+    gltf.scene.getObjectByName("Wheat_2"),
+    32
+  );
+
+
   noCollision.forEach((object) => {
     gltf.scene.children[0].remove(gltf.scene.getObjectByName(object));
   });
@@ -118,11 +124,16 @@ export function Model(props) {
         mesh={
           <>
             <boxBufferGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial color="pink" opacity={.3} transparent={true} />
+            <meshStandardMaterial
+              color="pink"
+              opacity={0.3}
+              transparent={true}
+            />
           </>
         }
         positions={positions}
       />
+
 
       {noCollisionObjects.map((object, i) => (
         <primitive key={i} object={object} />

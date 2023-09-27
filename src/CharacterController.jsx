@@ -750,10 +750,6 @@ export default function CharacterController(props) {
     }
   });
 
-  const pointer = useRef(null)
-
-
-
   return (
     <RigidBody
       colliders={false}

@@ -31,7 +31,6 @@ export default function Lights() {
       />
 
       <fog attach="fog" args={["lightpink", 120, 200]} />
-      <Stars radius={60} depth={0} count={1200} factor={2} saturation={0} fade speed={1} />
       <color attach="background" args={["lightpink"]} />
       <ambientLight intensity={0.15} />
       <mesh position={[0, 90, 0]}>

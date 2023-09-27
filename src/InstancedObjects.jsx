@@ -1,10 +1,14 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Matrix4, Vector3, WebGLRenderTarget, RGBAFormat, Vector2 } from "three";
+import React, { useRef, useEffect } from "react";
+import { Matrix4, Raycaster, Vector2, Vector3 } from "three";
+import { useThree } from "@react-three/fiber";
+
 
 const InstancedObjects = ({ mesh, positions }) => {
+    
   const instanceMesh = useRef();
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [mousePosition, setMousePosition] = useState(new Vector2());
+  const raycaster = new Raycaster();
+  const mouse = new Vector2();
+  const { camera } = useThree();  // Access the camera from the Canvas context
 
   useEffect(() => {
     if (positions && instanceMesh.current) {
@@ -18,7 +22,6 @@ const InstancedObjects = ({ mesh, positions }) => {
       });
       instanceMesh.current.instanceMatrix.needsUpdate = true;
 
-      // If needed, compute the bounding sphere
       if (
         instanceMesh.current &&
         instanceMesh.current.geometry &&
@@ -30,17 +33,32 @@ const InstancedObjects = ({ mesh, positions }) => {
   }, [positions]);
 
   const handleMouseDown = (event) => {
-    console.log(event.eventObject)
-    setIsMouseDown(true);
-    setMousePosition(new Vector2(event.clientX, event.clientY));
-    // Render the scene to your offscreen target with the special material
-    // Read the color of the pixel under the mouse
-    // Map that color to an instance
-  };
+    // Normalize mouse position
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObject(instanceMesh.current, true);
+  
+    if (intersects.length > 0) {
+      const instanceId = intersects[0].instanceId;
 
-  const handleMouseUp = (event) => {
-    setIsMouseDown(false);
+      console.log(instanceId)
+      const matrix = new Matrix4();
+      instanceMesh.current.getMatrixAt(instanceId, matrix);
+      const position = new Vector3();
+      position.setFromMatrixPosition(matrix);
+      
+      // Add a simple upward animation (you can customize this)
+      position.y += 0.1;
+      matrix.setPosition(position);
+      console.log(position)
+
+      instanceMesh.current.setMatrixAt(instanceId, matrix);
+      instanceMesh.current.instanceMatrix.needsUpdate = true;
+    }
   };
+  
 
   return (
     <>
@@ -49,7 +67,6 @@ const InstancedObjects = ({ mesh, positions }) => {
           ref={instanceMesh}
           args={[null, null, positions.length]}
           onPointerDown={handleMouseDown}
-          onPointerUp={handleMouseUp}
         >
           {mesh}
         </instancedMesh>
