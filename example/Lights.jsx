@@ -30,8 +30,8 @@ export default function Lights() {
         color={"pink"}
       />
 
-      <fog attach="fog" args={["lightpink", 120, 200]} />
-      <color attach="background" args={["lightpink"]} />
+      <fog attach="fog" args={["lightblue", 120, 200]} />
+      <color attach="background" args={["lightblue"]} />
       <ambientLight intensity={0.15} />
       <mesh position={[0, 90, 0]}>
         <boxBufferGeometry args={[1000, 0.1, 1000]} />
